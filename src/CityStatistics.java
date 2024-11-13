@@ -32,15 +32,27 @@ class CityStatistics {
     }
 
     public void displayBuildingFloors() {
-        Map<Integer, Integer> floorCountMap = new HashMap<>();
+        Map<String, Map<Integer, Integer>> cityFloorCountMap = new HashMap<>();
 
         for (Building building : buildings) {
-            floorCountMap.put(building.getFloors(), floorCountMap.getOrDefault(building.getFloors(), 0) + 1);
+            String city = building.getCity();
+            int floors = building.getFloors();
+
+            Map<Integer, Integer> floorCountMap = cityFloorCountMap
+                    .computeIfAbsent(city, k -> new HashMap<>());
+
+            floorCountMap.put(floors, floorCountMap.getOrDefault(floors, 0) + 1);
         }
 
-        System.out.println("Количество зданий по этажности:");
-        for (Map.Entry<Integer, Integer> entry : floorCountMap.entrySet()) {
-            System.out.println(entry.getKey() + " этажных: " + entry.getValue());
+        for (Map.Entry<String, Map<Integer, Integer>> cityEntry : cityFloorCountMap.entrySet()) {
+            String city = cityEntry.getKey();
+            Map<Integer, Integer> floorCountMap = cityEntry.getValue();
+
+            System.out.println(city + ":");
+            for (Map.Entry<Integer, Integer> entry : floorCountMap.entrySet()) {
+                System.out.println(entry.getKey() + " этаж(-ей): " + entry.getValue());
+            }
+            System.out.println();
         }
     }
 }
